@@ -44,7 +44,7 @@ public class PlayerAnimation : MonoBehaviour
     
 
     [Header("Punch")]
-    [SerializeField] Transform punchTarget, punchTransform;
+    [SerializeField] Transform punchTarget;
     [SerializeField] float punchSpeed;
     [SerializeField] float punchHoldTime;
     bool whichhand;
@@ -107,6 +107,9 @@ public class PlayerAnimation : MonoBehaviour
 
     public IEnumerator PunchAnimation(HandRig rig)
     {
+        Vector3 punchPos;
+        Quaternion punchRot;
+
         var t = 0f;
         var x = 0f;
         while (x < 1)
@@ -115,18 +118,18 @@ public class PlayerAnimation : MonoBehaviour
             //t = 1 - Mathf.Cos((x * Mathf.PI) / 2); //ease in lerping function
             t = 2.70158f * x * x * x - 1.70158f * x * x;
 
-            punchTransform.position = punchTarget.position;
-            punchTransform.rotation = punchTarget.rotation;
+            punchPos = HandParent.InverseTransformPoint(punchTarget.position);
+            punchRot = Quaternion.Inverse(HandParent.rotation) * punchTarget.rotation;
 
-            rig.hand.transform.localPosition = Vector3.LerpUnclamped(rig.startPos, punchTransform.localPosition, t);
-            rig.hand.transform.localRotation = Quaternion.Lerp(rig.startRot, punchTransform.localRotation, x);
+            rig.hand.transform.localPosition = Vector3.LerpUnclamped(rig.startPos, punchPos, t);
+            rig.hand.transform.localRotation = Quaternion.Lerp(rig.startRot, punchRot, x);
             yield return null;
         }
 
         yield return new WaitForSeconds(punchHoldTime);
 
-        var punchPos = HandParent.InverseTransformPoint(rig.IK.transform.position);
-        var punchRot = Quaternion.Inverse(HandParent.rotation) * rig.IK.transform.rotation;
+        punchPos = HandParent.InverseTransformPoint(rig.IK.transform.position);
+        punchRot = Quaternion.Inverse(HandParent.rotation) * rig.IK.transform.rotation;
 
         t = 1f;
         x = 1f;

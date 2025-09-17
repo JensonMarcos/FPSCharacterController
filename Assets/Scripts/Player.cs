@@ -5,6 +5,7 @@ public class Player : MonoBehaviour
     [SerializeField] PlayerCharacter playerCharacter;
     [SerializeField] PlayerCamera playerCamera;
     [SerializeField] PlayerAnimation playerAnimation;
+    [SerializeField] PlayerHands playerHands;
 
     void Start()
     {
@@ -45,6 +46,7 @@ public class Player : MonoBehaviour
     {
         playerAnimation.UpdateRigs();
         playerCamera.UpdatePosition(playerCharacter.camTarget);
+        playerHands.UpdateTransform(playerCharacter.camTarget);
     }
 
     private void HandleCharacterInput()
