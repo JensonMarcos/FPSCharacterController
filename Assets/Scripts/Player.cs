@@ -4,13 +4,14 @@ public class Player : MonoBehaviour
 {
     [SerializeField] PlayerCharacter playerCharacter;
     [SerializeField] PlayerCamera playerCamera;
-    [SerializeField] PlayerAnimation playerAnimation;
-    [SerializeField] PlayerHands playerHands;
+    [SerializeField] PlayerBodyAnimation playerBody;
+    [SerializeField] PlayerHandsAnimation playerHands;
 
     void Start()
     {
         playerCamera.Initialize(playerCharacter.camTarget);
-        playerAnimation.Initialize();
+        playerBody.Initialize();
+        playerHands.Initialize();
     }
 
     void Update()
@@ -22,7 +23,7 @@ public class Player : MonoBehaviour
         var stance = playerCharacter.state.Stance == Stance.Stand ? 1f : 0f;
         var vel = playerCharacter.Motor.Velocity;
 
-        playerAnimation.SetAnimator(stance, 0f, Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), 0);
+        playerBody.SetAnimator(stance, 0f, Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), 0);
 
 
 #if UNITY_EDITOR
@@ -36,15 +37,16 @@ public class Player : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            //playerAnimation.TriggerAnimator((Random.Range(0f, 1f) > 0.5f) ? "RPunch" : "LPunch");
-            playerAnimation.Punch();
+            //playerBody.TriggerAnimator((Random.Range(0f, 1f) > 0.5f) ? "RPunch" : "LPunch");
+            playerHands.Punch();
         }
 #endif
     }
 
     void LateUpdate()
     {
-        playerAnimation.UpdateRigs();
+        playerBody.UpdateRigs();
+        playerHands.UpdateRigs();
         playerCamera.UpdatePosition(playerCharacter.camTarget);
         playerHands.UpdateTransform(playerCharacter.camTarget);
     }

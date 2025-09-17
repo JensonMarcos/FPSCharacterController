@@ -1,13 +1,6 @@
+using UnityEngine;
 using System.Collections;
 using DitzelGames.FastIK;
-using UnityEngine;
-
-[System.Serializable]
-public struct LookRig
-{
-    public Transform bone;
-    public float weight;
-}
 
 [System.Serializable]
 public struct HandRig
@@ -18,30 +11,14 @@ public struct HandRig
     public Quaternion startRot;
 }
 
-public class PlayerAnimation : MonoBehaviour
+public class PlayerHandsAnimation : MonoBehaviour
 {
-    public Animator bodyAnimator;
-
-    [Header("Legs")]
-    public float Stance;
-    public float Moving;
-    public float Horizontal;
-    public float Vertical;
-    public float IdleState;
-
-    [SerializeField] float moveResponse;
-    [SerializeField] float crouchResponse;
-
-
     [Header("Rig")]
-    [SerializeField] Transform cam;
-    [SerializeField] LookRig[] aimRig;
-
     public HandRig RHand, LHand;
     [Range(0, 1)]
     public float HandIKWeight;
     [SerializeField] Transform HandParent;
-    
+
 
     [Header("Punch")]
     [SerializeField] Transform punchTarget;
@@ -57,38 +34,15 @@ public class PlayerAnimation : MonoBehaviour
         LHand.startRot = LHand.hand.localRotation;
     }
 
-
-    void Update()
-    {
-        bodyAnimator.SetFloat("Stance", Mathf.Lerp(bodyAnimator.GetFloat("Stance"), Stance, crouchResponse * Time.deltaTime));
-        bodyAnimator.SetFloat("Moving", Mathf.Lerp(bodyAnimator.GetFloat("Moving"), Moving, moveResponse * Time.deltaTime));
-        bodyAnimator.SetFloat("Horizontal", Mathf.Lerp(bodyAnimator.GetFloat("Horizontal"), Horizontal, moveResponse * Time.deltaTime));
-        bodyAnimator.SetFloat("Vertical", Mathf.Lerp(bodyAnimator.GetFloat("Vertical"), Vertical, moveResponse * Time.deltaTime));
-        bodyAnimator.SetFloat("IdleState", Mathf.Lerp(bodyAnimator.GetFloat("IdleState"), IdleState, 10 * Time.deltaTime));
-    }
-
     public void UpdateRigs()
     {
-        foreach (var rig in aimRig)
-        {
-            rig.bone.transform.rotation = Quaternion.Lerp(rig.bone.transform.rotation, cam.rotation, rig.weight);
-        }
-
         RHand.IK.Weight = LHand.IK.Weight = HandIKWeight;
     }
 
-    public void SetAnimator(float _stance, float _moving, float x, float y, float idle)
+    public void UpdateTransform(Transform target)
     {
-        Stance = _stance;
-        Moving = _moving;
-        Horizontal = x;
-        Vertical = y;
-        IdleState = idle;
-    }
-
-    public void TriggerAnimator(string name)
-    {
-        bodyAnimator.SetTrigger(name);
+        transform.position = target.position;
+        transform.rotation = target.rotation;
     }
 
     public void Punch()
@@ -147,6 +101,4 @@ public class PlayerAnimation : MonoBehaviour
         rig.hand.transform.localRotation = rig.startRot;
 
     }
-
-     
 }

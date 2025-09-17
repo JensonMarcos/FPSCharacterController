@@ -675,7 +675,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerCharacter: {fileID: 1464618225}
   playerCamera: {fileID: 1261257810}
-  playerAnimation: {fileID: 7520309642840852746}
+  playerBody: {fileID: 7520309642840852746}
   playerHands: {fileID: 1057690565}
 --- !u!4 &627969225
 Transform:
@@ -976,6 +976,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c25fc9b7b59d5b34495d85b52233f71f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  RHand:
+    hand: {fileID: 88530648}
+    IK: {fileID: 2342637775747156817}
+    startPos: {x: 0, y: 0, z: 0}
+    startRot: {x: 0, y: 0, z: 0, w: 0}
+  LHand:
+    hand: {fileID: 1355018531}
+    IK: {fileID: 7136921973591597404}
+    startPos: {x: 0, y: 0, z: 0}
+    startRot: {x: 0, y: 0, z: 0, w: 0}
+  HandIKWeight: 1
+  HandParent: {fileID: 612102331}
+  punchTarget: {fileID: 604605724}
+  punchSpeed: 5
+  punchHoldTime: 0
 --- !u!1 &1155053096
 GameObject:
   m_ObjectHideFlags: 0
@@ -6452,21 +6467,6 @@ MonoBehaviour:
     weight: 0.3
   - bone: {fileID: 7552888302991409648}
     weight: 0.5
-  RHand:
-    hand: {fileID: 88530648}
-    IK: {fileID: 2342637775747156817}
-    startPos: {x: 0, y: 0, z: 0}
-    startRot: {x: 0, y: 0, z: 0, w: 0}
-  LHand:
-    hand: {fileID: 1355018531}
-    IK: {fileID: 7136921973591597404}
-    startPos: {x: 0, y: 0, z: 0}
-    startRot: {x: 0, y: 0, z: 0, w: 0}
-  HandIKWeight: 1
-  HandParent: {fileID: 1057690564}
-  punchTarget: {fileID: 604605724}
-  punchSpeed: 5
-  punchHoldTime: 0.05
 --- !u!114 &7520309642840852747
 MonoBehaviour:
   m_ObjectHideFlags: 0
