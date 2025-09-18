@@ -28,6 +28,9 @@ public class PlayerBodyAnimation : MonoBehaviour
     [SerializeField] Transform cam;
     [SerializeField] LookRig[] aimRig;
 
+    [SerializeField] Transform upperBodyBone;
+    public float UpperBodyTilt;
+
 
     public void Initialize()
     {
@@ -51,6 +54,8 @@ public class PlayerBodyAnimation : MonoBehaviour
         }
 
         //RHand.IK.Weight = LHand.IK.Weight = HandIKWeight;
+
+        upperBodyBone.transform.rotation *= Quaternion.Euler(0, UpperBodyTilt, 0);
     }
 
     public void SetAnimator(float _stance, float _moving, float x, float y, float idle)

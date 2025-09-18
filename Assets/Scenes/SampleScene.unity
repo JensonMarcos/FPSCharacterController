@@ -605,7 +605,7 @@ Transform:
   m_GameObject: {fileID: 604605723}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: 2.9558573e-12, z: 2.2454107e-15, w: 0.70710677}
-  m_LocalPosition: {x: 0, y: 0, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -989,8 +989,10 @@ MonoBehaviour:
   HandIKWeight: 1
   HandParent: {fileID: 612102331}
   punchTarget: {fileID: 604605724}
-  punchSpeed: 5
+  punchSpeed: 4
   punchHoldTime: 0
+  body: {fileID: 7520309642840852746}
+  tiltAmount: 20
 --- !u!1 &1155053096
 GameObject:
   m_ObjectHideFlags: 0
@@ -6467,6 +6469,8 @@ MonoBehaviour:
     weight: 0.3
   - bone: {fileID: 7552888302991409648}
     weight: 0.5
+  upperBodyBone: {fileID: 4333586608588956919}
+  UpperBodyTilt: 0
 --- !u!114 &7520309642840852747
 MonoBehaviour:
   m_ObjectHideFlags: 0

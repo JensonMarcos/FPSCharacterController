@@ -25,6 +25,8 @@ public class PlayerHandsAnimation : MonoBehaviour
     [SerializeField] float punchSpeed;
     [SerializeField] float punchHoldTime;
     bool whichhand;
+    [SerializeField] PlayerBodyAnimation body;
+    [SerializeField] float tiltAmount;
 
     public void Initialize()
     {
@@ -54,12 +56,14 @@ public class PlayerHandsAnimation : MonoBehaviour
         RHand.hand.transform.localPosition = RHand.startPos;
         RHand.hand.transform.localRotation = RHand.startRot;
 
+        body.UpperBodyTilt = 0f;
+
         whichhand = !whichhand;
 
-        StartCoroutine(PunchAnimation(whichhand ? RHand : LHand));
+        StartCoroutine(PunchAnimation(whichhand ? RHand : LHand, whichhand ? -1 : 1));
     }
 
-    public IEnumerator PunchAnimation(HandRig rig)
+    public IEnumerator PunchAnimation(HandRig rig, int tiltMult)
     {
         Vector3 punchPos;
         Quaternion punchRot;
@@ -77,13 +81,15 @@ public class PlayerHandsAnimation : MonoBehaviour
 
             rig.hand.transform.localPosition = Vector3.LerpUnclamped(rig.startPos, punchPos, t);
             rig.hand.transform.localRotation = Quaternion.Lerp(rig.startRot, punchRot, x);
+
+            body.UpperBodyTilt = Mathf.Lerp(0, tiltAmount * tiltMult, t);
             yield return null;
         }
 
         yield return new WaitForSeconds(punchHoldTime);
 
-        punchPos = HandParent.InverseTransformPoint(rig.IK.transform.position);
-        punchRot = Quaternion.Inverse(HandParent.rotation) * rig.IK.transform.rotation;
+        // punchPos = HandParent.InverseTransformPoint(rig.IK.transform.position);
+        // punchRot = Quaternion.Inverse(HandParent.rotation) * rig.IK.transform.rotation;
 
         t = 1f;
         x = 1f;
@@ -92,13 +98,20 @@ public class PlayerHandsAnimation : MonoBehaviour
             x -= punchSpeed * Time.deltaTime;
             t = -(Mathf.Cos(Mathf.PI * x) - 1) / 2; //ease in lerping function
 
+            punchPos = HandParent.InverseTransformPoint(punchTarget.position);
+            punchRot = Quaternion.Inverse(HandParent.rotation) * punchTarget.rotation;
+
             rig.hand.transform.localPosition = Vector3.LerpUnclamped(rig.startPos, punchPos, t);
             rig.hand.transform.localRotation = Quaternion.Lerp(rig.startRot, punchRot, x);
+
+            body.UpperBodyTilt = Mathf.Lerp(0, tiltAmount * tiltMult, t);
             yield return null;
         }
 
         rig.hand.transform.localPosition = rig.startPos;
         rig.hand.transform.localRotation = rig.startRot;
+
+        body.UpperBodyTilt = 0f;
 
     }
 }
