@@ -7,6 +7,7 @@ public struct LookRig
 {
     public Transform bone;
     public float weight;
+    public bool x, y, z;
 }
 
 public class PlayerBodyAnimation : MonoBehaviour
@@ -52,7 +53,10 @@ public class PlayerBodyAnimation : MonoBehaviour
 
         foreach (var rig in aimRig)
         {
-            rig.bone.transform.rotation = Quaternion.Lerp(rig.bone.transform.rotation, cam.rotation, rig.weight);
+            var newRot = Quaternion.Lerp(rig.bone.transform.rotation, cam.rotation, rig.weight).eulerAngles;
+            var oldRot = rig.bone.transform.eulerAngles;
+
+            rig.bone.transform.rotation = Quaternion.Euler(rig.x ? newRot.x : oldRot.x, rig.y ? newRot.y : oldRot.y, rig.z ? newRot.z : oldRot.z);
         }
 
         //RHand.IK.Weight = LHand.IK.Weight = HandIKWeight;

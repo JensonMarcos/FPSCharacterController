@@ -7,6 +7,13 @@ public class Player : MonoBehaviour
     [SerializeField] PlayerBodyAnimation playerBody;
     [SerializeField] PlayerHandsAnimation playerHands;
 
+    //temp, editor
+    [Space]
+    [Header("Temp")]
+    [SerializeField] bool melee;
+    [SerializeField] GameObject gun;
+    [SerializeField] Transform gunLhand, gunRHand;
+
     void Start()
     {
         playerCamera.Initialize(playerCharacter.camTarget);
@@ -24,7 +31,7 @@ public class Player : MonoBehaviour
         var moving = playerCharacter.state.Stance is Stance.Sprint ? 1f : 0f;
         var vel = playerCharacter.Motor.Velocity;
 
-        playerBody.SetAnimator(stance, moving, Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), 0);
+        playerBody.SetAnimator(stance, moving, Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), melee ? 0 : 1);
 
 
 #if UNITY_EDITOR
@@ -36,10 +43,22 @@ public class Player : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            melee = !melee;
+            playerHands.ResetHands();
+            gun.SetActive(!melee);
+        } 
+
+        if (melee && Input.GetKeyDown(KeyCode.Mouse0))
         {
             //playerBody.TriggerAnimator((Random.Range(0f, 1f) > 0.5f) ? "RPunch" : "LPunch");
             playerHands.Punch();
+        }
+
+        if (!melee && Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            playerCamera.AddRotation(-2, 1.4f, 0.1f, 1);
         }
 #endif
     }
@@ -47,7 +66,7 @@ public class Player : MonoBehaviour
     void LateUpdate()
     {
         playerBody.UpdateRigs();
-        playerHands.UpdateRigs();
+        playerHands.UpdateRigs(melee ? null : gunRHand, melee ? null : gunLhand);
         playerCamera.UpdatePosition(playerCharacter.camTarget);
         playerHands.UpdateTransform(playerCharacter.camTarget);
     }

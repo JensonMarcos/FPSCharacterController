@@ -36,9 +36,20 @@ public class PlayerHandsAnimation : MonoBehaviour
         LHand.startRot = LHand.hand.localRotation;
     }
 
-    public void UpdateRigs()
+    public void UpdateRigs(Transform _rHand, Transform _lHand)
     {
         RHand.IK.Weight = LHand.IK.Weight = HandIKWeight;
+
+        if (_rHand != null)
+        {
+            RHand.hand.position = _rHand.position;
+            RHand.hand.rotation = _rHand.rotation;
+        }
+        if (_lHand != null)
+        {
+            LHand.hand.position = _lHand.position;
+            LHand.hand.rotation = _lHand.rotation;
+        }
     }
 
     public void UpdateTransform(Transform target)
@@ -47,14 +58,19 @@ public class PlayerHandsAnimation : MonoBehaviour
         transform.rotation = target.rotation;
     }
 
+    public void ResetHands()
+    {
+        LHand.hand.localPosition = LHand.startPos;
+        LHand.hand.localRotation = LHand.startRot;
+        RHand.hand.localPosition = RHand.startPos;
+        RHand.hand.localRotation = RHand.startRot;
+    }
+
     public void Punch()
     {
         StopCoroutine("PunchAnimation");
-        
-        LHand.hand.transform.localPosition = LHand.startPos;
-        LHand.hand.transform.localRotation = LHand.startRot;
-        RHand.hand.transform.localPosition = RHand.startPos;
-        RHand.hand.transform.localRotation = RHand.startRot;
+
+        ResetHands();
 
         body.UpperBodyTilt = 0f;
 
@@ -79,8 +95,8 @@ public class PlayerHandsAnimation : MonoBehaviour
             punchPos = HandParent.InverseTransformPoint(punchTarget.position);
             punchRot = Quaternion.Inverse(HandParent.rotation) * punchTarget.rotation;
 
-            rig.hand.transform.localPosition = Vector3.LerpUnclamped(rig.startPos, punchPos, t);
-            rig.hand.transform.localRotation = Quaternion.Lerp(rig.startRot, punchRot, x);
+            rig.hand.localPosition = Vector3.LerpUnclamped(rig.startPos, punchPos, t);
+            rig.hand.localRotation = Quaternion.Lerp(rig.startRot, punchRot, x);
 
             body.UpperBodyTilt = Mathf.Lerp(0, tiltAmount * tiltMult, t);
             yield return null;
@@ -101,15 +117,15 @@ public class PlayerHandsAnimation : MonoBehaviour
             punchPos = HandParent.InverseTransformPoint(punchTarget.position);
             punchRot = Quaternion.Inverse(HandParent.rotation) * punchTarget.rotation;
 
-            rig.hand.transform.localPosition = Vector3.LerpUnclamped(rig.startPos, punchPos, t);
-            rig.hand.transform.localRotation = Quaternion.Lerp(rig.startRot, punchRot, x);
+            rig.hand.localPosition = Vector3.LerpUnclamped(rig.startPos, punchPos, t);
+            rig.hand.localRotation = Quaternion.Lerp(rig.startRot, punchRot, x);
 
             body.UpperBodyTilt = Mathf.Lerp(0, tiltAmount * tiltMult, t);
             yield return null;
         }
 
-        rig.hand.transform.localPosition = rig.startPos;
-        rig.hand.transform.localRotation = rig.startRot;
+        rig.hand.localPosition = rig.startPos;
+        rig.hand.localRotation = rig.startRot;
 
         body.UpperBodyTilt = 0f;
 
