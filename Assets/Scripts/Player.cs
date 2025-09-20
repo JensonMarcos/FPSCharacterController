@@ -20,10 +20,11 @@ public class Player : MonoBehaviour
         playerCamera.UpdateRotation();
         HandleCharacterInput();
 
-        var stance = playerCharacter.state.Stance == Stance.Stand ? 1f : 0f;
+        var stance = playerCharacter.state.Stance is Stance.Stand or Stance.Sprint ? 1f : 0f;
+        var moving = playerCharacter.state.Stance is Stance.Sprint ? 1f : 0f;
         var vel = playerCharacter.Motor.Velocity;
 
-        playerBody.SetAnimator(stance, 0f, Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), 0);
+        playerBody.SetAnimator(stance, moving, Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), 0);
 
 
 #if UNITY_EDITOR
@@ -61,6 +62,7 @@ public class Player : MonoBehaviour
         characterInputs.CameraRotation = playerCamera.transform.rotation;
         characterInputs.Jump = Input.GetKeyDown(KeyCode.Space);
         characterInputs.Crouch = Input.GetKey(KeyCode.LeftControl);
+        characterInputs.Sprint = Input.GetKey(KeyCode.LeftShift);
 
         // Apply inputs to character
         playerCharacter.SetInputs(ref characterInputs);

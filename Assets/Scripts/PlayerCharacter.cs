@@ -10,13 +10,15 @@ public struct PlayerCharacterInputs
     public Quaternion CameraRotation;
     public bool Jump;
     public bool Crouch;
+    public bool Sprint;
 }
 
 public enum Stance
 {
-    Stand, Crouch, Slide
+    Stand, Crouch, Slide, Sprint
 }
 
+[System.Serializable]
 public struct CharacterState
 {
     public bool Grounded;
@@ -37,6 +39,7 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
     bool wishJump;
     bool wishCrouch;
     bool wishCrouchInAir;
+    bool wishSprint;
 
     float timeUngrounded;
     float timeJumpRequested;
@@ -51,6 +54,11 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
     [Header("Walk")]
     [SerializeField] float walkSpeed;
     [SerializeField] float walkAcceleration;
+
+    [Space]
+    [Header("Sprint")]
+    [SerializeField] float sprintSpeed;
+    [SerializeField] float sprintAcceleration;
 
     [Space]
     [Header("Air")]
@@ -108,6 +116,8 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
             wishCrouchInAir = !state.Grounded;
         else if (!wishCrouch && wasRequestingCrouch)
             wishCrouchInAir = false;
+
+        wishSprint = inputs.Sprint;
     }
 
     /// <summary>
@@ -163,11 +173,27 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
                 }
             }
             //move
-            if (state.Stance is Stance.Stand or Stance.Crouch)
+            if (state.Stance is Stance.Stand or Stance.Crouch or Stance.Sprint)
             {
-                var speed = state.Stance == Stance.Stand ? walkSpeed : crouchSpeed;
+                if (state.Stance is Stance.Stand or Stance.Sprint) state.Stance = wishSprint ? Stance.Sprint : Stance.Stand;
 
-                var acceleration = state.Stance == Stance.Stand ? walkAcceleration : crouchAcceleration;
+                var speed = state.Stance switch
+                {
+                    Stance.Stand => walkSpeed,
+                    Stance.Sprint => sprintSpeed,
+                    Stance.Crouch => crouchSpeed,
+                    Stance.Slide => 0f,
+                    _ => 0f,
+                };
+
+                var acceleration = state.Stance switch
+                {
+                    Stance.Stand => walkAcceleration,
+                    Stance.Sprint => sprintAcceleration,
+                    Stance.Crouch => crouchAcceleration,
+                    Stance.Slide => 0f,
+                    _ => 0f,
+                };
 
                 var targetVelocity = groundedMovement * speed;
                 currentVelocity = Vector3.Lerp(currentVelocity, targetVelocity, 1f - Mathf.Exp(-acceleration * deltaTime));
@@ -257,7 +283,7 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
     public void BeforeCharacterUpdate(float deltaTime)
     {
         tempstate = state;
-        if (wishCrouch && state.Stance == Stance.Stand)
+        if (wishCrouch && state.Stance is Stance.Stand or Stance.Sprint)
         {
             state.Stance = Stance.Crouch;
             Motor.SetCapsuleDimensions(Motor.Capsule.radius, crouchHeight, crouchHeight * 0.5f);
@@ -272,7 +298,7 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
     /// </summary>
     public void AfterCharacterUpdate(float deltaTime)
     {
-        if (!wishCrouch && state.Stance != Stance.Stand)
+        if (!wishCrouch && state.Stance is not (Stance.Stand or Stance.Sprint))
         {
             Motor.SetCapsuleDimensions(Motor.Capsule.radius, standHeight, standHeight * 0.5f);
 
@@ -283,7 +309,7 @@ public class PlayerCharacter : MonoBehaviour, ICharacterController
             }
             else
             {
-                state.Stance = Stance.Stand;
+                state.Stance = wishSprint ? Stance.Sprint : Stance.Stand;
                 //camTarget.localPosition = new Vector3(0, camStandHeight, 0);
                 //root.localScale = Vector3.one;
             }

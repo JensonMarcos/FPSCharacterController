@@ -60,10 +60,10 @@ public class PlayerHandsAnimation : MonoBehaviour
 
         whichhand = !whichhand;
 
-        StartCoroutine(PunchAnimation(whichhand ? RHand : LHand, whichhand ? -1 : 1));
+        StartCoroutine(PunchAnimation(whichhand ? RHand : LHand, whichhand ? -2f : 1f));
     }
 
-    public IEnumerator PunchAnimation(HandRig rig, int tiltMult)
+    public IEnumerator PunchAnimation(HandRig rig, float tiltMult)
     {
         Vector3 punchPos;
         Quaternion punchRot;

@@ -47,7 +47,9 @@ public class PlayerBodyAnimation : MonoBehaviour
     }
 
     public void UpdateRigs()
-    {
+    {   
+        upperBodyBone.transform.rotation *= Quaternion.Euler(0, UpperBodyTilt, 0);
+
         foreach (var rig in aimRig)
         {
             rig.bone.transform.rotation = Quaternion.Lerp(rig.bone.transform.rotation, cam.rotation, rig.weight);
@@ -55,7 +57,7 @@ public class PlayerBodyAnimation : MonoBehaviour
 
         //RHand.IK.Weight = LHand.IK.Weight = HandIKWeight;
 
-        upperBodyBone.transform.rotation *= Quaternion.Euler(0, UpperBodyTilt, 0);
+        
     }
 
     public void SetAnimator(float _stance, float _moving, float x, float y, float idle)

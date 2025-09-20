@@ -605,7 +605,7 @@ Transform:
   m_GameObject: {fileID: 604605723}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: 2.9558573e-12, z: 2.2454107e-15, w: 0.70710677}
-  m_LocalPosition: {x: 0, y: 0, z: 0.6}
+  m_LocalPosition: {x: 0, y: 0, z: 0.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1534,8 +1534,10 @@ MonoBehaviour:
   Motor: {fileID: 1464618227}
   camTarget: {fileID: 1941278785}
   root: {fileID: 1846817421}
-  walkSpeed: 20
+  walkSpeed: 15
   walkAcceleration: 25
+  sprintSpeed: 30
+  sprintAcceleration: 25
   airSpeed: 15
   airAcceleration: 70
   crouchSpeed: 7
@@ -6469,7 +6471,7 @@ MonoBehaviour:
     weight: 0.3
   - bone: {fileID: 7552888302991409648}
     weight: 0.5
-  upperBodyBone: {fileID: 4333586608588956919}
+  upperBodyBone: {fileID: 2997350585362879644}
   UpperBodyTilt: 0
 --- !u!114 &7520309642840852747
 MonoBehaviour:
